@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AcademiSync Pro | College Timetable & Substitution Hub</title>
+  <meta name="description" content="Modern, responsive real-time college timetable management and period substitution application." />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Ambient Gradient Mesh Background -->
+  <div class="bg-mesh">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Top Global Demo & Role Switcher Bar -->
+  <header class="demo-banner">
+    <div class="demo-banner-container">
+      <div class="banner-badge">
+        <i data-lucide="zap" class="icon-sm"></i>
+        <span>HACKATHON DEMO CONTROL</span>
+      </div>
+      <div class="demo-role-buttons">
+        <button class="demo-btn" onclick="app.quickLogin('student')">
+          <i data-lucide="graduation-cap"></i> Student (Alex - CSE-A)
+        </button>
+        <button class="demo-btn" onclick="app.quickLogin('faculty1')">
+          <i data-lucide="user-check"></i> Prof. Ravi (Math)
+        </button>
+        <button class="demo-btn" onclick="app.quickLogin('faculty2')">
+          <i data-lucide="user-plus"></i> Prof. Kumar (DBMS)
+        </button>
+        <button class="demo-btn" onclick="app.quickLogin('hod')">
+          <i data-lucide="shield-check"></i> HOD Portal
+        </button>
+      </div>
+      <div class="banner-actions">
+        <span class="fb-status-tag" id="fbStatusBadge">
+          <span class="pulse-dot-green"></span> FIREBASE: time-table-42cb4
+        </span>
+        <button class="demo-btn" style="background: rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24;" onclick="db.pushAllDataToFirestore()" title="Populate Firebase Console Database">
+          <i data-lucide="upload-cloud"></i> Push Data to Firestore
+        </button>
+        <button class="icon-btn-text" onclick="app.openFirebaseConfigModal()" title="Firebase Settings & Security Rules">
+          <i data-lucide="database"></i> Firebase Rules
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="brand" onclick="app.showPage('landing')">
+        <div class="brand-icon">
+          <i data-lucide="calendar"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">AcademiSync<span class="brand-accent">.Pro</span></span>
+          <span class="brand-tagline">Smart Timetable Management</span>
+        </div>
+      </div>
+
+      <!-- Active User Profile Indicator (When logged in) -->
+      <div class="nav-user-area hidden" id="navUserArea">
+        <div class="nav-notifications" id="notifBellBtn" onclick="app.toggleNotificationDrawer()">
+          <i data-lucide="bell"></i>
+          <span class="notif-badge hidden" id="notifBadge">0</span>
+        </div>
+
+        <div class="user-pill">
+          <div class="user-avatar" id="userAvatar">A</div>
+          <div class="user-info">
+            <span class="user-name" id="userNameDisplay">Alex Johnson</span>
+            <span class="user-role-tag" id="userRoleTag">STUDENT • CSE-A</span>
+          </div>
+        </div>
+
+        <button class="logout-btn" onclick="app.logout()" title="Sign Out">
+          <i data-lucide="log-out"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Notification Drawer Sidebar -->
+  <aside class="notif-drawer hidden" id="notifDrawer">
+    <div class="drawer-header">
+      <h3><i data-lucide="bell-ring"></i> Live Notifications</h3>
+      <div class="drawer-header-actions">
+        <button class="text-btn-sm" onclick="app.markAllNotificationsRead()">Mark all read</button>
+        <button class="icon-close-btn" onclick="app.toggleNotificationDrawer()"><i data-lucide="x"></i></button>
+      </div>
+    </div>
+    <div class="drawer-content" id="notifList">
+      <!-- Dynamic notifications inserted here -->
+    </div>
+  </aside>
+
+  <!-- Main Application Container -->
+  <main class="app-main">
+
+    <!-- PAGE 1: LANDING PAGE -->
+    <section class="page active" id="pageLanding">
+      <div class="landing-hero">
+        <div class="hero-badge">
+          <i data-lucide="sparkles"></i> AI-Powered Timetable & Instant Substitution Platform
+        </div>
+        <h1 class="hero-title">
+          Next-Gen College Timetable & <br /><span class="gradient-text">Faculty Period Swap Hub</span>
+        </h1>
+        <p class="hero-subtitle">
+          Real-time timetable tracking, automated teacher period exchange, instant student push alerts, and HOD audit controls powered by Firebase.
+        </p>
+
+        <!-- Split Login Portal Selection -->
+        <div class="split-login-container">
+          <!-- Student Card -->
+          <div class="portal-card student-card" onclick="app.showPage('studentLogin')">
+            <div class="portal-badge">STUDENT PORTAL</div>
+            <div class="portal-icon">
+              <i data-lucide="graduation-cap"></i>
+            </div>
+            <h2>🎓 STUDENT</h2>
+            <p>Access your real-time section timetable, teacher substitution updates, and submit class feedback.</p>
+            <div class="portal-tags">
+              <span><i data-lucide="check-circle-2"></i> Verified OTP Login</span>
+              <span><i data-lucide="check-circle-2"></i> Auto Section Sync</span>
+              <span><i data-lucide="check-circle-2"></i> Live Notifications</span>
+            </div>
+            <button class="portal-btn student-btn">
+              Access Student Portal <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+
+          <!-- Faculty Card -->
+          <div class="portal-card faculty-card" onclick="app.showPage('facultyLogin')">
+            <div class="portal-badge">FACULTY PORTAL</div>
+            <div class="portal-icon">
+              <i data-lucide="user-check"></i>
+            </div>
+            <h2>👨‍🏫 FACULTY</h2>
+            <p>Manage assigned periods, edit session topics, send substitution requests, and respond to period swaps.</p>
+            <div class="portal-tags">
+              <span><i data-lucide="check-circle-2"></i> Assigned Period Edits</span>
+              <span><i data-lucide="check-circle-2"></i> 1-Click Swap System</span>
+              <span><i data-lucide="check-circle-2"></i> Conflict Guard</span>
+            </div>
+            <button class="portal-btn faculty-btn">
+              Faculty Login <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- HOD Access Banner -->
+        <div class="hod-access-bar" onclick="app.showPage('hodLogin')">
+          <div class="hod-access-info">
+            <div class="hod-icon"><i data-lucide="shield-check"></i></div>
+            <div>
+              <h4>Department Head (HOD) Access Portal</h4>
+              <p>Master section schedules, departmental swap overrides, and audit log reports.</p>
+            </div>
+          </div>
+          <button class="hod-access-btn">HOD Secure Login <i data-lucide="lock"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2: STUDENT LOGIN -->
+    <section class="page" id="pageStudentLogin">
+      <div class="login-wrapper">
+        <div class="login-card glass-panel">
+          <button class="back-link" onclick="app.showPage('landing')">
+            <i data-lucide="arrow-left"></i> Back to Role Selection
+          </button>
+          
+          <div class="login-header">
+            <div class="login-avatar student-avatar-bg">
+              <i data-lucide="graduation-cap"></i>
+            </div>
+            <h2>Student Access Portal</h2>
+            <p>Enter your institutional email to receive a 6-digit OTP code.</p>
+          </div>
+
+          <!-- Step 1: Email Form -->
+          <form id="studentEmailForm" onsubmit="app.handleStudentEmailSubmit(event)">
+            <div class="form-group">
+              <label for="studentEmail">College Email Address</label>
+              <div class="input-with-icon">
+                <i data-lucide="mail"></i>
+                <input type="email" id="studentEmail" placeholder="e.g. alex.j@college.edu" value="alex.j@college.edu" required />
+              </div>
+              <small class="form-hint">Must end with @college.edu or registered domain</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary full-width" id="btnSendOtp">
+              <i data-lucide="send"></i> Send Verification Code (OTP)
+            </button>
+          </form>
+
+          <!-- Step 2: OTP Verification Form (Shown after email submit) -->
+          <div id="studentOtpSection" class="hidden">
+            <div class="otp-alert-box">
+              <i data-lucide="info"></i>
+              <span>OTP code sent to <strong id="sentEmailDisplay">alex.j@college.edu</strong>. Demo code: <mark>123456</mark></span>
+            </div>
+
+            <form id="studentOtpForm" onsubmit="app.handleStudentOtpSubmit(event)">
+              <div class="form-group">
+                <label>Enter 6-Digit OTP Code</label>
+                <div class="otp-inputs">
+                  <input type="text" maxlength="1" class="otp-box" data-index="0" autofocus value="1"/>
+                  <input type="text" maxlength="1" class="otp-box" data-index="1" value="2"/>
+                  <input type="text" maxlength="1" class="otp-box" data-index="2" value="3"/>
+                  <input type="text" maxlength="1" class="otp-box" data-index="3" value="4"/>
+                  <input type="text" maxlength="1" class="otp-box" data-index="4" value="5"/>
+                  <input type="text" maxlength="1" class="otp-box" data-index="5" value="6"/>
+                </div>
+              </div>
+
+              <!-- Retrieved Section Preview -->
+              <div class="auto-profile-box" id="autoProfileBox">
+                <div class="auto-profile-item">
+                  <span class="label">Matched Profile:</span>
+                  <strong id="matchedName">Alex Johnson</strong>
+                </div>
+                <div class="auto-profile-item">
+                  <span class="label">Assigned Section:</span>
+                  <span class="badge badge-accent" id="matchedSection">CSE-A (Auto-Retrieved)</span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-success full-width">
+                <i data-lucide="check-circle-2"></i> Verify & Open Dashboard
+              </button>
+            </form>
+          </div>
+
+          <div class="demo-quick-pick">
+            <span>Quick Demo Student:</span>
+            <button class="chip-btn" onclick="app.fillStudentDemo('alex.j@college.edu')">Alex Johnson (CSE-A)</button>
+            <button class="chip-btn" onclick="app.fillStudentDemo('sarah.m@college.edu')">Sarah Miller (CSE-B)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 3: STUDENT DASHBOARD -->
+    <section class="page" id="pageStudentDashboard">
+      <div class="dashboard-layout">
+        <!-- Student Banner Card -->
+        <div class="student-profile-banner">
+          <div class="profile-hero-info">
+            <div class="hero-avatar">
+              <i data-lucide="user"></i>
+            </div>
+            <div class="hero-text-content">
+              <div class="banner-top-tags">
+                <span class="badge badge-primary" id="stuDeptBadge">Computer Science & Engineering</span>
+                <span class="badge badge-secondary" id="stuSecBadge">Section CSE-A</span>
+                <span class="badge badge-outline" id="stuYearSemBadge">3rd Year • 5th Semester</span>
+              </div>
+              <h2 id="stuNameHeader">Welcome, Alex Johnson</h2>
+              <p class="stu-id-tag"><i data-lucide="id-card"></i> Student ID: <span id="stuIdDisplay">STU-2024-8841</span> | Email: <span id="stuEmailDisplay">alex.j@college.edu</span></p>
+            </div>
+          </div>
+          <div class="date-widget">
+            <i data-lucide="calendar-days"></i>
+            <div>
+              <div class="today-day" id="todayDayName">Thursday</div>
+              <div class="today-full-date" id="todayFullDate">24 September 2026</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student Main Navigation Tabs -->
+        <div class="tab-bar">
+          <button class="tab-item active" id="stuTabSchedule" onclick="app.switchStudentMainTab('schedule')">
+            <i data-lucide="calendar"></i> Timetable & Schedule
+          </button>
+          <button class="tab-item" id="stuTabSyllabus" onclick="app.switchStudentMainTab('syllabus')">
+            <i data-lucide="book-open"></i> Course Syllabus & Progress
+          </button>
+          <button class="tab-item" id="stuTabTips" onclick="app.switchStudentMainTab('tips')">
+            <i data-lucide="sparkles"></i> Teacher Tips & Exam Scores
+          </button>
+        </div>
+
+        <!-- TAB CONTENT 1: TIMETABLE SCHEDULE -->
+        <div class="tab-content active" id="stuTabContentSchedule">
+          <div class="dash-grid">
+            <!-- Left Main Area: Timetables -->
+            <div class="dash-main-column">
+              
+              <!-- Section Header & Controls -->
+              <div class="section-card-header">
+                <div class="section-title">
+                  <i data-lucide="clock"></i>
+                  <h3>Today's Schedule</h3>
+                  <span class="status-pill status-live"><span class="pulse-dot"></span> LIVE</span>
+                </div>
+                <div class="header-actions-group">
+                  <div class="search-input-box">
+                    <i data-lucide="search"></i>
+                    <input type="text" id="stuSearchInput" placeholder="Search subject, teacher, room..." onkeyup="app.filterStudentScheduleBySearch()" />
+                  </div>
+                  <button class="btn btn-outline-light btn-sm" onclick="app.exportStudentSchedule()" title="Export Schedule">
+                    <i data-lucide="download"></i> Export Schedule
+                  </button>
+                  <div class="view-tab-switcher">
+                    <button class="tab-btn active" id="tabBtnToday" onclick="app.switchStudentScheduleTab('today')">Today</button>
+                    <button class="tab-btn" id="tabBtnWeekly" onclick="app.switchStudentScheduleTab('weekly')">Weekly</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- READ-ONLY ALERT NOTICE -->
+              <div class="permission-notice">
+                <i data-lucide="shield-alert"></i>
+                <span><strong>Student Read-Only Mode:</strong> You are viewing official section timetable entries. Subject, Teacher, Room, and Timings are synchronized from backend.</span>
+              </div>
+
+              <!-- TODAY'S SCHEDULE VIEW -->
+              <div class="schedule-container" id="studentTodayView">
+                <div class="period-list" id="studentTodaySlots">
+                  <!-- Dynamic period cards inserted here -->
+                </div>
+              </div>
+
+              <!-- WEEKLY TIMETABLE VIEW (Hidden by default) -->
+              <div class="schedule-container hidden" id="studentWeeklyView">
+                <!-- Day Selector Pills -->
+                <div class="day-pills" id="studentDayPills">
+                  <button class="day-pill active" onclick="app.filterStudentWeeklyDay('Monday')">Monday</button>
+                  <button class="day-pill" onclick="app.filterStudentWeeklyDay('Tuesday')">Tuesday</button>
+                  <button class="day-pill" onclick="app.filterStudentWeeklyDay('Wednesday')">Wednesday</button>
+                  <button class="day-pill" onclick="app.filterStudentWeeklyDay('Thursday')">Thursday</button>
+                  <button class="day-pill" onclick="app.filterStudentWeeklyDay('Friday')">Friday</button>
+                </div>
+                <div class="period-list" id="studentWeeklySlots">
+                  <!-- Dynamic weekly slots inserted here -->
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Sidebar: Notifications & Feedback -->
+            <div class="dash-side-column">
+              <!-- Recent Substitution & Updates Card -->
+              <div class="side-card">
+                <div class="side-card-header">
+                  <h4><i data-lucide="bell"></i> Timetable Alerts</h4>
+                  <span class="badge badge-accent" id="stuNotifCountBadge">0 New</span>
+                </div>
+                <div class="side-card-body" id="stuAlertsList">
+                  <!-- Alerts list -->
+                </div>
+              </div>
+
+              <!-- Teacher Feedback Form -->
+              <div class="side-card">
+                <div class="side-card-header">
+                  <h4><i data-lucide="message-square"></i> Class Feedback & Rating</h4>
+                </div>
+                <div class="side-card-body">
+                  <form id="studentFeedbackForm" onsubmit="app.handleFeedbackSubmit(event)">
+                    <div class="form-group">
+                      <label>Select Period</label>
+                      <select id="feedbackPeriodSelect" required>
+                        <!-- Options populated dynamically -->
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Rating</label>
+                      <div class="star-rating">
+                        <input type="radio" name="rating" id="star5" value="5" checked><label for="star5">★</label>
+                        <input type="radio" name="rating" id="star4" value="4"><label for="star4">★</label>
+                        <input type="radio" name="rating" id="star3" value="3"><label for="star3">★</label>
+                        <input type="radio" name="rating" id="star2" value="2"><label for="star2">★</label>
+                        <input type="radio" name="rating" id="star1" value="1"><label for="star1">★</label>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Feedback Comment</label>
+                      <textarea id="feedbackComment" rows="2" placeholder="e.g. Great explanation on SQL indexes!" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-outline full-width">
+                      <i data-lucide="send"></i> Submit Feedback
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 2: COURSE SYLLABUS -->
+        <div class="tab-content hidden" id="stuTabContentSyllabus">
+          <div class="section-card-header">
+            <div class="section-title">
+              <i data-lucide="book-open"></i>
+              <h3>Department Course Syllabus & Module Progress</h3>
+            </div>
+            <div class="header-actions-group">
+              <select id="syllabusSubjectFilter" onchange="app.renderStudentSyllabus()">
+                <option value="ALL">All Subjects</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="DBMS">DBMS</option>
+                <option value="Java Programming">Java Programming</option>
+                <option value="Operating Systems">Operating Systems</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="syllabus-grid" id="studentSyllabusContainer">
+            <!-- Dynamic Syllabus Subject Cards -->
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 3: TEACHER TIPS & SCORES -->
+        <div class="tab-content hidden" id="stuTabContentTips">
+          <!-- Academic Scorecard Section -->
+          <div class="scorecard-wrapper">
+            <div class="section-card-header">
+              <div class="section-title">
+                <i data-lucide="award"></i>
+                <h3>Academic Performance Scorecard (Mid & Semester)</h3>
+              </div>
+            </div>
+            <div class="scorecard-grid" id="studentScorecardGrid">
+              <!-- Scorecard items inserted dynamically -->
+            </div>
+          </div>
+
+          <!-- Teacher Tips Feed Section -->
+          <div class="tips-wrapper" style="margin-top: 30px;">
+            <div class="section-card-header">
+              <div class="section-title">
+                <i data-lucide="sparkles"></i>
+                <h3>Faculty Recommendations & Exam Tips</h3>
+              </div>
+              <div class="header-actions-group">
+                <select id="tipExamFilter" onchange="app.renderStudentTips()">
+                  <option value="ALL">All Exam Milestones</option>
+                  <option value="Mid-1">Mid-Term 1 (Mid-1)</option>
+                  <option value="Mid-2">Mid-Term 2 (Mid-2)</option>
+                  <option value="Semester Strategy">End-Semester</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="tips-feed-grid" id="studentTipsFeed">
+              <!-- Dynamic Teacher Tip Cards inserted dynamically -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PAGE 4: FACULTY LOGIN -->
+    <section class="page" id="pageFacultyLogin">
+      <div class="login-wrapper">
+        <div class="login-card glass-panel">
+          <button class="back-link" onclick="app.showPage('landing')">
+            <i data-lucide="arrow-left"></i> Back to Role Selection
+          </button>
+          
+          <div class="login-header">
+            <div class="login-avatar faculty-avatar-bg">
+              <i data-lucide="user-check"></i>
+            </div>
+            <h2>Faculty Portal Access</h2>
+            <p>Sign in with your faculty email & credentials.</p>
+          </div>
+
+          <form id="facultyLoginForm" onsubmit="app.handleFacultyLogin(event)">
+            <div class="form-group">
+              <label for="facultyEmail">Faculty Email</label>
+              <div class="input-with-icon">
+                <i data-lucide="mail"></i>
+                <input type="email" id="facultyEmail" placeholder="ravi.k@college.edu" value="ravi.k@college.edu" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="facultyPassword">Password</label>
+              <div class="input-with-icon">
+                <i data-lucide="lock"></i>
+                <input type="password" id="facultyPassword" value="faculty123" required />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary full-width">
+              <i data-lucide="log-in"></i> Sign In to Faculty Dashboard
+            </button>
+          </form>
+
+          <div class="demo-quick-pick">
+            <span>Quick Demo Faculty Accounts:</span>
+            <div class="quick-chip-grid">
+              <button class="chip-btn" onclick="app.fillFacultyDemo('ravi.k@college.edu')">Prof. Ravi (Math)</button>
+              <button class="chip-btn" onclick="app.fillFacultyDemo('kumar.s@college.edu')">Prof. Kumar (DBMS)</button>
+              <button class="chip-btn" onclick="app.fillFacultyDemo('priya.p@college.edu')">Prof. Priya (Java)</button>
+              <button class="chip-btn" onclick="app.fillFacultyDemo('sharma.a@college.edu')">Prof. Sharma (OS)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 5: FACULTY DASHBOARD -->
+    <section class="page" id="pageFacultyDashboard">
+      <div class="dashboard-layout">
+        <!-- Faculty Header Banner -->
+        <div class="faculty-profile-banner">
+          <div class="profile-hero-info">
+            <div class="hero-avatar fac-avatar">
+              <i data-lucide="user-check"></i>
+            </div>
+            <div class="hero-text-content">
+              <div class="banner-top-tags">
+                <span class="badge badge-primary" id="facDeptBadge">Computer Science Dept</span>
+                <span class="badge badge-secondary" id="facIdBadge">FAC-CSE-101</span>
+              </div>
+              <h2 id="facNameHeader">Prof. Ravi Kumar</h2>
+              <p class="stu-id-tag">
+                <i data-lucide="book-open"></i> Subjects: <strong id="facSubjectsDisplay">Mathematics, Linear Algebra</strong> | 
+                Assigned Sections: <strong id="facSectionsDisplay">CSE-A, CSE-B</strong>
+              </p>
+            </div>
+          </div>
+          
+          <div class="fac-quick-stats">
+            <div class="stat-pill">
+              <span class="stat-num" id="facTodayCount">3</span>
+              <span class="stat-lbl">Today's Periods</span>
+            </div>
+            <div class="stat-pill highlight-pill" id="facPendingReqPill" onclick="app.switchFacultyTab('received')">
+              <span class="stat-num" id="facPendingCount">0</span>
+              <span class="stat-lbl">Pending Requests</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Faculty Tabs -->
+        <div class="tab-bar">
+          <button class="tab-item active" id="facTabMyPeriods" onclick="app.switchFacultyTab('myPeriods')">
+            <i data-lucide="calendar"></i> My Assigned Periods
+          </button>
+          <button class="tab-item" id="facTabReceived" onclick="app.switchFacultyTab('received')">
+            <i data-lucide="inbox"></i> Received Requests <span class="tab-badge" id="receivedBadgeCount">0</span>
+          </button>
+          <button class="tab-item" id="facTabSent" onclick="app.switchFacultyTab('sent')">
+            <i data-lucide="send"></i> My Sent Requests
+          </button>
+          <button class="tab-item" id="facTabMaster" onclick="app.switchFacultyTab('master')">
+            <i data-lucide="layout-grid"></i> Section Master Schedule
+          </button>
+          <button class="tab-item" id="facTabTips" onclick="app.switchFacultyTab('tips')">
+            <i data-lucide="sparkles"></i> Student Tips & Exam Feedback
+          </button>
+        </div>
+
+        <!-- TAB 1: MY ASSIGNED PERIODS -->
+        <div class="tab-content active" id="facTabContentMyPeriods">
+          <div class="section-card-header">
+            <div class="section-title">
+              <i data-lucide="check-square"></i>
+              <h3>Your Teaching Schedule</h3>
+            </div>
+            <div class="day-filter-mini">
+              <select id="facDaySelect" onchange="app.renderFacultySchedule()">
+                <option value="Thursday" selected>Today (Thursday)</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Friday">Friday</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="period-list" id="facultyPeriodsList">
+            <!-- Dynamic periods inserted here -->
+          </div>
+        </div>
+
+        <!-- TAB 2: RECEIVED REQUESTS -->
+        <div class="tab-content hidden" id="facTabContentReceived">
+          <div class="section-card-header">
+            <div class="section-title">
+              <i data-lucide="inbox"></i>
+              <h3>Period Swap Requests Sent to You</h3>
+            </div>
+          </div>
+          <div class="request-cards-container" id="facReceivedRequestsList">
+            <!-- Received requests cards inserted here -->
+          </div>
+        </div>
+
+        <!-- TAB 3: MY SENT REQUESTS -->
+        <div class="tab-content hidden" id="facTabContentSent">
+          <div class="section-card-header">
+            <div class="section-title">
+              <i data-lucide="send"></i>
+              <h3>Requests Sent by You</h3>
+            </div>
+          </div>
+          <div class="request-cards-container" id="facSentRequestsList">
+            <!-- Sent requests cards inserted here -->
+          </div>
+        </div>
+
+        <!-- TAB 4: MASTER SCHEDULE -->
+        <div class="tab-content hidden" id="facTabContentMaster">
+          <div class="section-card-header">
+            <div class="section-title">
+              <i data-lucide="layers"></i>
+              <h3>All Faculty Schedule (Read-Only View)</h3>
+            </div>
+          </div>
+          <div class="period-list" id="facMasterList">
+            <!-- All periods across department -->
+          </div>
+        </div>
+
+        <!-- TAB 5: STUDENT TIPS & EXAM FEEDBACK -->
+        <div class="tab-content hidden" id="facTabContentTips">
+          <div class="section-card-header">
+            <div class="section-title">
+              <i data-lucide="sparkles"></i>
+              <h3>Give Student Performance Tips & Feedback</h3>
+            </div>
+          </div>
+
+          <div class="tips-management-layout">
+            <!-- Left Side: Compose Tip Form -->
+            <div class="side-card">
+              <div class="side-card-header">
+                <h4><i data-lucide="edit-3"></i> Post Performance Advice</h4>
+              </div>
+              <div class="side-card-body">
+                <form id="facTipForm" onsubmit="app.handleSendTeacherTip(event)">
+                  <div class="form-group">
+                    <label>Select Target Student</label>
+                    <select id="tipStudentSelect" onchange="app.onFacultyTipStudentChange()" required>
+                      <!-- Options populated dynamically -->
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Select Subject</label>
+                    <select id="tipSubjectSelect" required>
+                      <!-- Options populated dynamically -->
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Target Exam Phase</label>
+                      <select id="tipExamPhase" required>
+                        <option value="Mid-1">Mid-Term 1 (Mid-1)</option>
+                        <option value="Mid-2" selected>Mid-Term 2 (Mid-2)</option>
+                        <option value="Semester Strategy">End-Semester Exam</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Score / Performance Badge</label>
+                      <input type="text" id="tipScoreValue" placeholder="e.g. 78% / Grade A" required />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Performance Remark / Summary</label>
+                    <input type="text" id="tipPerformanceTag" placeholder="e.g. Strong in Algebra, Needs practice in Vectors" required />
+                  </div>
+                  <div class="form-group">
+                    <label>Detailed Feedback & Tip</label>
+                    <textarea id="tipText" rows="3" placeholder="Enter encouraging feedback and specific areas to focus on..." required></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Actionable Recommendations (One per line)</label>
+                    <textarea id="tipAdviceLines" rows="3" placeholder="e.g. Revise Gauss Divergence theorem&#10;Practice past 5 years question papers&#10;Attend Friday tutorial session" required></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary full-width">
+                    <i data-lucide="send"></i> Dispatch Tip & Notify Student
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Right Side: Recent Tips Logged -->
+            <div class="side-card">
+              <div class="side-card-header">
+                <h4><i data-lucide="list"></i> Recently Posted Teacher Tips</h4>
+              </div>
+              <div class="side-card-body" id="facTipsHistoryList">
+                <!-- Posted tips list -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PAGE 6: HOD LOGIN -->
+    <section class="page" id="pageHodLogin">
+      <div class="login-wrapper">
+        <div class="login-card glass-panel">
+          <button class="back-link" onclick="app.showPage('landing')">
+            <i data-lucide="arrow-left"></i> Back to Role Selection
+          </button>
+          
+          <div class="login-header">
+            <div class="login-avatar hod-avatar-bg">
+              <i data-lucide="shield-check"></i>
+            </div>
+            <h2>HOD Executive Access</h2>
+            <p>Enter Head of Department security key to access master controls.</p>
+          </div>
+
+          <form id="hodLoginForm" onsubmit="app.handleHodLogin(event)">
+            <div class="form-group">
+              <label for="hodPasscode">HOD Security Passcode</label>
+              <div class="input-with-icon">
+                <i data-lucide="key-round"></i>
+                <input type="password" id="hodPasscode" placeholder="Enter admin passcode" value="admin123" required />
+              </div>
+              <small class="form-hint">Demo passcode: <code>admin123</code></small>
+            </div>
+
+            <button type="submit" class="btn btn-primary full-width">
+              <i data-lucide="shield"></i> Authenticate HOD Session
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 7: HOD DASHBOARD -->
+    <section class="page" id="pageHodDashboard">
+      <div class="dashboard-layout">
+        <!-- HOD Header Banner -->
+        <div class="hod-profile-banner">
+          <div class="profile-hero-info">
+            <div class="hero-avatar hod-avatar">
+              <i data-lucide="shield-check"></i>
+            </div>
+            <div class="hero-text-content">
+              <div class="banner-top-tags">
+                <span class="badge badge-primary">Department Head</span>
+                <span class="badge badge-accent">CSE Department</span>
+              </div>
+              <h2>Dr. S. Vance | Head of Department</h2>
+              <p class="stu-id-tag">Master timetable supervision, period substitution approvals, and audit trail log.</p>
+            </div>
+          </div>
+          <button class="btn btn-outline-light" onclick="app.openBroadcastModal()">
+            <i data-lucide="megaphone"></i> Department Broadcast
+          </button>
+        </div>
+
+        <!-- HOD Tabs -->
+        <div class="tab-bar">
+          <button class="tab-item active" id="hodTabMaster" onclick="app.switchHodTab('master')">
+            <i data-lucide="calendar"></i> Master Section Schedules
+          </button>
+          <button class="tab-item" id="hodTabSwaps" onclick="app.switchHodTab('swaps')">
+            <i data-lucide="repeat"></i> All Swap Requests
+          </button>
+          <button class="tab-item" id="hodTabAudit" onclick="app.switchHodTab('audit')">
+            <i data-lucide="history"></i> Change History Audit Log
+          </button>
+          <button class="tab-item" id="hodTabRules" onclick="app.switchHodTab('rules')">
+            <i data-lucide="lock"></i> Firebase Security Rules
+          </button>
+        </div>
+
+        <!-- HOD TAB 1: MASTER TIMETABLE -->
+        <div class="tab-content active" id="hodTabContentMaster">
+          <div class="section-card-header">
+            <div class="section-title">
+              <i data-lucide="filter"></i>
+              <h3>Department Master Schedule Grid</h3>
+            </div>
+            <div class="filter-group">
+              <select id="hodSecFilter" onchange="app.renderHodMasterSchedule()">
+                <option value="ALL">All Sections (CSE-A & CSE-B)</option>
+                <option value="CSE-A">Section CSE-A</option>
+                <option value="CSE-B">Section CSE-B</option>
+              </select>
+              <select id="hodDayFilter" onchange="app.renderHodMasterSchedule()">
+                <option value="Thursday">Thursday</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Friday">Friday</option>
+              </select>
+            </div>
+          </div>
+          <div class="period-list" id="hodMasterGrid">
+            <!-- Master slots inserted here -->
+          </div>
+        </div>
+
+        <!-- HOD TAB 2: ALL SWAP REQUESTS -->
+        <div class="tab-content hidden" id="hodTabContentSwaps">
+          <div class="section-card-header">
+            <div class="section-title">
+              <i data-lucide="list"></i>
+              <h3>All Swap & Substitution Requests</h3>
+            </div>
+          </div>
+          <div class="request-cards-container" id="hodAllSwapsList">
+            <!-- Swap records inserted here -->
+          </div>
+        </div>
+
+        <!-- HOD TAB 3: AUDIT LOG -->
+        <div class="tab-content hidden" id="hodTabContentAudit">
+          <div class="section-card-header">
+            <div class="section-title">
+              <i data-lucide="file-text"></i>
+              <h3>Timetable Modification Audit Log</h3>
+            </div>
+          </div>
+          <div class="audit-table-container">
+            <table class="audit-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Slot / Period</th>
+                  <th>Original Faculty</th>
+                  <th>Substituted Faculty</th>
+                  <th>Approved By / Status</th>
+                  <th>Reason</th>
+                </tr>
+              </thead>
+              <tbody id="hodAuditTableBody">
+                <!-- Audit logs inserted here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- HOD TAB 4: FIREBASE RULES -->
+        <div class="tab-content hidden" id="hodTabContentRules">
+          <div class="rules-view-container">
+            <h3><i data-lucide="shield"></i> Firebase Cloud Firestore Security Rules</h3>
+            <p>Production security rules enforcing strict role-based read/write policies for Students, Faculty, and HOD.</p>
+            <pre class="code-block" id="hodRulesCode"></pre>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL 1: FACULTY SWAP REQUEST MODAL -->
+  <div class="modal-overlay hidden" id="swapModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="user-plus"></i>
+          <h3>Request Period Substitution</h3>
+        </div>
+        <button class="icon-close-btn" onclick="app.closeSwapModal()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Period Summary Pill -->
+        <div class="period-summary-box">
+          <div class="p-sum-item">
+            <span class="lbl">Subject:</span>
+            <strong id="modalSubject">Mathematics</strong>
+          </div>
+          <div class="p-sum-item">
+            <span class="lbl">Section:</span>
+            <strong id="modalSection">CSE-A</strong>
+          </div>
+          <div class="p-sum-item">
+            <span class="lbl">Timing:</span>
+            <strong id="modalTime">09:00 AM - 10:00 AM</strong>
+          </div>
+          <div class="p-sum-item">
+            <span class="lbl">Room:</span>
+            <strong id="modalRoom">Room 201</strong>
+          </div>
+        </div>
+
+        <form id="swapRequestForm" onsubmit="app.handleSendSwapRequest(event)">
+          <input type="hidden" id="modalPeriodId" />
+
+          <div class="form-group">
+            <label for="modalRequestedFaculty">Select Substitute Faculty</label>
+            <select id="modalRequestedFaculty" onchange="app.validateFacultyConflict()" required>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+
+          <!-- Conflict Warning Banner -->
+          <div class="conflict-alert hidden" id="conflictAlert">
+            <i data-lucide="alert-triangle"></i>
+            <span id="conflictAlertText">Warning: Selected faculty has a schedule conflict!</span>
+          </div>
+
+          <div class="form-group">
+            <label for="modalReason">Reason for Request</label>
+            <textarea id="modalReason" rows="3" placeholder="e.g. I will be unavailable during this period due to a departmental review meeting." required></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="app.closeSwapModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="btnSubmitSwap">
+              <i data-lucide="send"></i> Send Request
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: FACULTY DIRECT EDIT MODAL -->
+  <div class="modal-overlay hidden" id="editPeriodModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="edit-3"></i>
+          <h3>Edit Assigned Period Details</h3>
+        </div>
+        <button class="icon-close-btn" onclick="app.closeEditModal()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="editPeriodForm" onsubmit="app.handleSaveEditPeriod(event)">
+          <input type="hidden" id="editPeriodId" />
+
+          <div class="form-group">
+            <label>Subject Name</label>
+            <input type="text" id="editSubject" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Room Number</label>
+              <input type="text" id="editRoom" required />
+            </div>
+            <div class="form-group">
+              <label>Topic / Lecture Notes</label>
+              <input type="text" id="editTopic" placeholder="e.g. Unit 3: Normalization" />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="app.closeEditModal()">Cancel</button>
+            <button type="submit" class="btn btn-success">
+              <i data-lucide="save"></i> Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: DEPARTMENT BROADCAST MODAL -->
+  <div class="modal-overlay hidden" id="broadcastModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="megaphone"></i>
+          <h3>Broadcast Department Announcement</h3>
+        </div>
+        <button class="icon-close-btn" onclick="app.closeBroadcastModal()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="broadcastForm" onsubmit="app.handleSendBroadcast(event)">
+          <div class="form-group">
+            <label>Audience</label>
+            <select id="broadcastAudience">
+              <option value="ALL">All Students & Faculty</option>
+              <option value="STUDENTS">Students Only</option>
+              <option value="FACULTY">Faculty Only</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Announcement Title</label>
+            <input type="text" id="broadcastTitle" placeholder="e.g. Schedule Alteration Notice for Annual Tech Symposium" required />
+          </div>
+          <div class="form-group">
+            <label>Announcement Content</label>
+            <textarea id="broadcastContent" rows="3" placeholder="Enter message text..." required></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="app.closeBroadcastModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              <i data-lucide="send"></i> Dispatch Broadcast
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: FIREBASE CONFIG & RULES SETTINGS -->
+  <div class="modal-overlay hidden" id="firebaseModal">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="database"></i>
+          <h3>Firebase Connection & Security Configuration</h3>
+        </div>
+        <button class="icon-close-btn" onclick="app.closeFirebaseConfigModal()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="firebase-tabs">
+          <button class="fb-tab active" onclick="app.switchFbTab('config')">Firebase Config</button>
+          <button class="fb-tab" onclick="app.switchFbTab('rules')">Firestore Security Rules</button>
+          <button class="fb-tab" onclick="app.switchFbTab('messaging')">FCM Setup Guide</button>
+        </div>
+
+        <div id="fbTabConfig" class="fb-tab-content active">
+          <p>The application is operating in <strong>Hybrid Mode</strong>: uses embedded LocalStorage Firestore simulation engine with optional live Firebase SDK synchronization.</p>
+          <div class="form-group">
+            <label>Firebase Web Config JSON</label>
+            <textarea id="fbConfigJson" rows="6" class="code-font" placeholder='{
+  "apiKey": "AIzaSy...",
+  "authDomain": "college-timetable.firebaseapp.com",
+  "projectId": "college-timetable",
+  "storageBucket": "college-timetable.appspot.com",
+  "messagingSenderId": "123456789",
+  "appId": "1:123456789:web:abcdef"
+}'></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="app.saveFirebaseConfig()">
+            <i data-lucide="save"></i> Save Firebase Credentials
+          </button>
+        </div>
+
+        <div id="fbTabRules" class="fb-tab-content hidden">
+          <p class="form-hint">Copy and paste this ruleset into your Firebase Console > Firestore Database > Rules.</p>
+          <pre class="code-block" id="modalRulesCode"></pre>
+        </div>
+
+        <div id="fbTabMessaging" class="fb-tab-content hidden">
+          <div class="fcm-instructions">
+            <h4><i data-lucide="bell"></i> Firebase Cloud Messaging (FCM) Integration</h4>
+            <p>FCM enables real-time push notifications to student and faculty mobile & desktop browsers when period substitutions are accepted.</p>
+            <ul>
+              <li><strong>Service Worker:</strong> <code>firebase-messaging-sw.js</code> in public root.</li>
+              <li><strong>VAPID Key:</strong> Registered in browser notification permissions.</li>
+              <li><strong>Events:</strong> Dispatches token on login and listens to <code>onMessage</code> payload.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 5: PERIOD DETAIL VIEW MODAL -->
+  <div class="modal-overlay hidden" id="periodDetailModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="book-open"></i>
+          <h3>Class Session Overview</h3>
+        </div>
+        <button class="icon-close-btn" onclick="app.closePeriodDetailModal()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-hero-box">
+          <div class="d-subject" id="detailSubject">Mathematics</div>
+          <div class="d-meta">
+            <span class="badge badge-primary" id="detailSection">CSE-A</span>
+            <span class="badge badge-secondary" id="detailRoom">Room 201</span>
+            <span class="badge badge-outline" id="detailTime">09:00 AM - 10:00 AM</span>
+          </div>
+        </div>
+
+        <div class="detail-section-group">
+          <h5><i data-lucide="user"></i> Faculty Instructor</h5>
+          <p id="detailFacultyName">Prof. Ravi Kumar</p>
+          <small id="detailFacultyEmail" class="form-hint">ravi.k@college.edu</small>
+        </div>
+
+        <div class="detail-section-group">
+          <h5><i data-lucide="file-text"></i> Planned Topic / Syllabus</h5>
+          <p id="detailTopic">Unit 1: Linear Algebra & Matrix Calculus</p>
+        </div>
+
+        <div class="detail-section-group" id="detailSubGroup">
+          <h5><i data-lucide="repeat"></i> Substitution Details</h5>
+          <p id="detailSubText">This period is being handled by a substitute faculty.</p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="app.closePeriodDetailModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Firebase Web SDK v10 (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+
+  <!-- Application JavaScript Modules -->
+  <script src="js/mock-data.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Initialize Lucide icons on DOM loaded
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    });
+  </script>
+</body>
+</html>

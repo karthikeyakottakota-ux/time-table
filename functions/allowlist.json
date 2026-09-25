@@ -1,0 +1,14 @@
+{
+  "allowedEmails": [
+    "alex.j@college.edu",
+    "sarah.m@college.edu",
+    "david.k@college.edu",
+    "ravi.k@college.edu",
+    "kumar.s@college.edu",
+    "priya.p@college.edu",
+    "sharma.a@college.edu"
+  ],
+  "allowedDomains": [
+    "@college.edu"
+  ]
+}
