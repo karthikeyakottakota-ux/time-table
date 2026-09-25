@@ -140,7 +140,7 @@
               <span><i data-lucide="check-circle-2"></i> Auto Section Sync</span>
               <span><i data-lucide="check-circle-2"></i> Live Notifications</span>
             </div>
-            <button class="portal-btn student-btn">
+            <button type="button" class="portal-btn student-btn" onclick="event.stopPropagation(); app.showPage('studentLogin');">
               Access Student Portal <i data-lucide="arrow-right"></i>
             </button>
           </div>
@@ -158,7 +158,7 @@
               <span><i data-lucide="check-circle-2"></i> 1-Click Swap System</span>
               <span><i data-lucide="check-circle-2"></i> Conflict Guard</span>
             </div>
-            <button class="portal-btn faculty-btn">
+            <button type="button" class="portal-btn faculty-btn" onclick="event.stopPropagation(); app.showPage('facultyLogin');">
               Faculty Login <i data-lucide="arrow-right"></i>
             </button>
           </div>
@@ -173,8 +173,9 @@
               <p>Master section schedules, departmental swap overrides, and audit log reports.</p>
             </div>
           </div>
-          <button class="hod-access-btn">HOD Secure Login <i data-lucide="lock"></i></button>
+          <button type="button" class="hod-access-btn" onclick="event.stopPropagation(); app.showPage('hodLogin');">HOD Secure Login <i data-lucide="lock"></i></button>
         </div>
+
       </div>
     </section>
 

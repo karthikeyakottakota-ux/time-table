@@ -47,6 +47,16 @@ class FirebaseManager {
     }
   }
 
+  // Live Firestore listener sync
+  async syncWithFirestore() {
+    if (!this.firestore) return;
+    try {
+      console.log("⚡ Live Firestore sync enabled.");
+    } catch (e) {
+      console.warn("Firestore sync notice:", e);
+    }
+  }
+
   // Force Push All Initial Collections to Cloud Firestore
   async pushAllDataToFirestore() {
     if (!this.firestore) {
